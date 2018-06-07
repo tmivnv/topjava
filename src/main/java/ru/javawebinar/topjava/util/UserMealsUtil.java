@@ -35,16 +35,20 @@ public class UserMealsUtil {
 
         List<UserMealWithExceed> mealWithExceedList = new ArrayList<>();
 
+        mealList.stream()
 
-        for (Map.Entry<LocalDate, List<UserMeal>> entry : mealList.stream().
-              collect(Collectors.groupingBy(
-                      m->m.getDateTime().toLocalDate())).entrySet())
-        {
-            for (UserMeal meal : entry.getValue()) {
-                if (meal.getDateTime().toLocalTime().isBefore(endTime) && meal.getDateTime().toLocalTime().isAfter(startTime))
-                    mealWithExceedList.add(new UserMealWithExceed(meal.getDateTime(), meal.getDescription(), meal.getCalories(), entry.getValue().stream().mapToInt(UserMeal::getCalories).sum() > caloriesPerDay));
-            }
-        }
+                //grouping by date
+                .collect(Collectors.groupingBy(m -> m.getDateTime().toLocalDate()))
+                //iterating every entry
+                .forEach((k,v)->v
+                        //filtering by time
+                        .stream().filter(m->m.getDateTime().toLocalTime().isAfter(startTime)&&m.getDateTime().toLocalTime().isBefore(endTime))
+                        //adding
+                        .forEach(
+                                e-> mealWithExceedList.add(new UserMealWithExceed(e.getDateTime(), e.getDescription(), e.getCalories(), v.stream().mapToInt(UserMeal::getCalories).sum() > caloriesPerDay))
+                        )
+                );
+
 
         return mealWithExceedList;
     }
