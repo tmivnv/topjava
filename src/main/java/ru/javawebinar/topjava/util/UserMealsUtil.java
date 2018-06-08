@@ -33,23 +33,35 @@ public class UserMealsUtil {
 
     public static List<UserMealWithExceed>  getFilteredWithExceeded(List<UserMeal> mealList, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
 
-        List<UserMealWithExceed> mealWithExceedList = new ArrayList<>();
 
-        mealList.stream()
-
-                //grouping by date
-                .collect(Collectors.groupingBy(m -> m.getDateTime().toLocalDate()))
-                //iterating every entry
-                .forEach((k,v)->v
-                        //filtering by time
-                        .stream().filter(m->m.getDateTime().toLocalTime().isAfter(startTime)&&m.getDateTime().toLocalTime().isBefore(endTime))
-                        //adding
-                        .forEach(
-                                e-> mealWithExceedList.add(new UserMealWithExceed(e.getDateTime(), e.getDescription(), e.getCalories(), v.stream().mapToInt(UserMeal::getCalories).sum() > caloriesPerDay))
-                        )
-                );
+        //map of days with exceeded calories
+        Map<LocalDate, Integer> datesWithExceededCalories = mealList.stream()
+                .collect(Collectors.groupingBy(
+                        e -> e.getDateTime().toLocalDate(),
+                        Collectors.summingInt(UserMeal::getCalories)))
+                .entrySet().stream()
+                .filter(e -> e.getValue() > caloriesPerDay)
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
 
-        return mealWithExceedList;
+        //building result list
+        return mealList.stream()
+                //filtering time
+                .filter(e->e.getDateTime().toLocalTime().isBefore(endTime)&&e.getDateTime().toLocalTime().isAfter(startTime))
+                //creating list of UserMealWithExceed
+                .map(e -> {
+                        UserMealWithExceed mealWithExceed =
+                        new UserMealWithExceed(e.getDateTime(),
+                                e.getDescription(),
+                                e.getCalories(),
+                                datesWithExceededCalories.containsKey(e.getDateTime().toLocalDate()) ? true : false);
+                                        return mealWithExceed;
+
+                                })
+                .collect(Collectors.toList());
+
+
+
+
     }
 }
