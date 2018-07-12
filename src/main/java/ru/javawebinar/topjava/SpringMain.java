@@ -24,6 +24,10 @@ public class SpringMain {
             adminUserController.create(new User(null, "userName", "email@mail.ru", "password", Role.ROLE_ADMIN));
             MealRestController controller = appCtx.getBean(MealRestController.class);
             List<MealWithExceed> mealWithExceeds = controller.getAll();
+            for (MealWithExceed meal: mealWithExceeds
+                 ) {
+                System.out.println(meal.toString());
+            }
 
         }
 
