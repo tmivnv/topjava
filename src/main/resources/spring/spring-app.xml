@@ -14,8 +14,23 @@
 
     <!-- Not necessary, already included with component-scan -->
     <!--<context:annotation-config/>-->
+ <!--   <bean  name="dataSource" id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="org.postgresql.Driver" />
+        <property name="url" value="jdbc:postgresql://localhost:5432/topjava02" />
+        <property name="username" value="user" />
+        <property name="password" value="password" />
+    </bean>
 
-    <context:component-scan base-package="ru.javawebinar.**.repository"/>
+    <bean  id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+        <property name="dataSource" ref="dataSource" />
+    </bean>
+
+    <bean  id="namedJdbcTemplate" class="org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate">
+        <constructor-arg type="javax.sql.DataSource" ref="dataSource"/>
+
+    </bean> !-->
+
+    <context:component-scan base-package="ru.javawebinar.**.repository.jdbc"/>
 
     <context:component-scan base-package="ru.javawebinar.**.service"/>
 

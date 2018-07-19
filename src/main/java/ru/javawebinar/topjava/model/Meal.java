@@ -1,36 +1,36 @@
 package ru.javawebinar.topjava.model;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
-public class UserMeal {
-    private final LocalDateTime dateTime;
+public class Meal extends AbstractBaseEntity {
+    private LocalDateTime dateTime;
 
-    private final String description;
+    private String description;
 
-    private final int calories;
-
-    public void setUserId(int userId) {
-        this.userId = userId;
-    }
+    private int calories;
 
     private int userId;
 
-    public int getUserId() {
-        return userId;
+
+    public Meal() {
     }
 
+    public Meal(Meal m)
+    {
+        this(m.getUserId(), m.getDateTime(), m.getDescription(), m.getCalories(), m.getUserId());
+    }
     public Meal(LocalDateTime dateTime, String description, int calories, int userId) {
         this(null, dateTime, description, calories, userId);
     }
 
     public Meal(Integer id, LocalDateTime dateTime, String description, int calories, int userId) {
-
         super(id);
         this.dateTime = dateTime;
         this.description = description;
         this.calories = calories;
         this.userId = userId;
-
     }
 
     public LocalDateTime getDateTime() {
@@ -43,5 +43,44 @@ public class UserMeal {
 
     public int getCalories() {
         return calories;
+    }
+
+    public LocalDate getDate() {
+        return dateTime.toLocalDate();
+    }
+
+    public LocalTime getTime() {
+        return dateTime.toLocalTime();
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+
+    public void setDateTime(LocalDateTime dateTime) {
+        this.dateTime = dateTime;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setCalories(int calories) {
+        this.calories = calories;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
+    @Override
+    public String toString() {
+        return "Meal{" +
+                "id=" + id +
+                ", dateTime=" + dateTime +
+                ", description='" + description + '\'' +
+                ", calories=" + calories +
+                ", userId=" + userId + '}';
     }
 }
